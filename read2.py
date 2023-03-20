@@ -1,3 +1,5 @@
+# Uses Euclidean norm to get the magnitude of the acceleration in x, y, and z directions
+
 import numpy as np
 import pandas as pd
 from scipy.fft import fft
@@ -5,7 +7,7 @@ from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 
 # Read the data from the CSV file
-data = pd.read_csv("digital_twin\\acceleration_data.csv")
+data = pd.read_csv("digital_twin\\acceleration_data3.csv")
 
 # Extract the acceleration data from the CSV file
 accel_x = data.iloc[:, 1].values
