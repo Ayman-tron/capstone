@@ -7,7 +7,7 @@ from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 
 # Read the data from the CSV file
-data = pd.read_csv("digital_twin\\acceleration_data3.csv")
+data = pd.read_csv("digital_twin\\2000_pipeline_test.csv")
 
 # Extract the acceleration data from the CSV file
 accel_x = data.iloc[:, 1].values
@@ -41,8 +41,8 @@ for i in peak_indices:
         f"Frequency: {frequency_bins[i]} Hz, Amplitude: {amplitude_spectrum[i]}")
 
 # Plot the amplitude spectrum
-plt.plot(frequency_bins[:len(frequency_bins)//2],
-         amplitude_spectrum[:len(amplitude_spectrum)//2])
+plt.plot(frequency_bins[2:len(frequency_bins)//2],
+         amplitude_spectrum[2:len(amplitude_spectrum)//2])
 plt.xlabel("Frequency (Hz)")
 plt.ylabel("Amplitude")
 plt.title("Amplitude Spectrum")
