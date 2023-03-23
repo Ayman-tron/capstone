@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 # Read the data from the CSV file
 data = pd.read_csv("digital_twin\\2000_pipline_test_other_flange_loose.csv")
 
@@ -34,15 +35,15 @@ half_data_length = len(freq_x) // 2
 fig, ax = plt.subplots(3, 1, figsize=(8, 8))
 ax[0].plot(freq_x[:half_data_length], np.abs(fft_x[:half_data_length]))
 ax[0].set_xlabel("Frequency (Hz)")
-ax[0].set_ylabel("Amplitude")
+ax[0].set_ylabel("Amplitude (db)")
 ax[0].set_title("X-axis acceleration")
 ax[1].plot(freq_y[:half_data_length], np.abs(fft_y[:half_data_length]))
 ax[1].set_xlabel("Frequency (Hz)")
-ax[1].set_ylabel("Amplitude")
+ax[1].set_ylabel("Amplitude (db)")
 ax[1].set_title("Y-axis acceleration")
 ax[2].plot(freq_z[:half_data_length], np.abs(fft_z[:half_data_length]))
 ax[2].set_xlabel("Frequency (Hz)")
-ax[2].set_ylabel("Amplitude")
+ax[2].set_ylabel("Amplitude (db)")
 ax[2].set_title("Z-axis acceleration")
 plt.tight_layout()
 plt.show()
