@@ -27,17 +27,20 @@ fft_y = np.fft.fft(windowed_y)
 freq_z = np.fft.fftfreq(len(windowed_z), d=1/sampling_rate)
 fft_z = np.fft.fft(windowed_z)
 
+# Find the index corresponding to half the length of the data array
+half_data_length = len(freq_x) // 2
+
 # Plot the frequency spectrum of the acceleration data
 fig, ax = plt.subplots(3, 1, figsize=(8, 8))
-ax[0].plot(freq_x, np.abs(fft_x))
+ax[0].plot(freq_x[:half_data_length], np.abs(fft_x[:half_data_length]))
 ax[0].set_xlabel("Frequency (Hz)")
 ax[0].set_ylabel("Amplitude")
 ax[0].set_title("X-axis acceleration")
-ax[1].plot(freq_y, np.abs(fft_y))
+ax[1].plot(freq_y[:half_data_length], np.abs(fft_y[:half_data_length]))
 ax[1].set_xlabel("Frequency (Hz)")
 ax[1].set_ylabel("Amplitude")
 ax[1].set_title("Y-axis acceleration")
-ax[2].plot(freq_z, np.abs(fft_z))
+ax[2].plot(freq_z[:half_data_length], np.abs(fft_z[:half_data_length]))
 ax[2].set_xlabel("Frequency (Hz)")
 ax[2].set_ylabel("Amplitude")
 ax[2].set_title("Z-axis acceleration")
