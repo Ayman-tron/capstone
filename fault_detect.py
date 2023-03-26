@@ -41,7 +41,7 @@ def load_data(filename):
             Acceleration_x = float(row[1])
             Acceleration_y = float(row[1])
             Acceleration_z = float(row[1])
-
+            Healthy = int(row[5])
             data.append({
                 "evidence": [Acceleration_x, Acceleration_y, Acceleration_z],
                 "label":  Healthy
