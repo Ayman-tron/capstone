@@ -5,7 +5,7 @@ from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 
 # Read the data from the CSV file
-data = pd.read_csv("digital_twin\\2000_pipeline_test.csv")
+data = pd.read_csv("digital_twin\\data\\2000_pipeline_test.csv")
 
 # Extract the acceleration data from the CSV file
 accel_x = data.iloc[:, 1].values
@@ -40,12 +40,16 @@ dominant_frequencies_amplitudes = [
 sorted_dominant_frequencies_amplitudes = sorted(
     dominant_frequencies_amplitudes, key=lambda x: x[1], reverse=True)
 
-# Print the 10% highest dominant frequencies and corresponding amplitudes
-num_top_frequencies = int(len(sorted_dominant_frequencies_amplitudes) * 0.1)
-print("Top 10% dominant frequencies and amplitudes:")
-for i in range(num_top_frequencies):
-    print(
-        f"Frequency: {sorted_dominant_frequencies_amplitudes[i][0]} Hz, Amplitude: {sorted_dominant_frequencies_amplitudes[i][1]}")
+# Calculate the threshold for 10% of the largest peak's magnitude
+threshold = 0.1 * sorted_dominant_frequencies_amplitudes[0][1]
+
+# Print the dominant frequencies and corresponding amplitudes above the threshold
+print("Dominant frequencies and amplitudes above 10% of the largest peak:")
+for freq, amp in sorted_dominant_frequencies_amplitudes:
+    if amp >= threshold:
+        print(f"Frequency: {freq} Hz, Amplitude: {amp}")
+    else:
+        break
 
 # Plot the amplitude spectrum
 plt.plot(frequency_bins[2:len(frequency_bins)//2],
