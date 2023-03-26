@@ -55,6 +55,6 @@ for freq, amp in sorted_dominant_frequencies_amplitudes:
 plt.plot(frequency_bins[2:len(frequency_bins)//2],
          amplitude_spectrum[2:len(amplitude_spectrum)//2])
 plt.xlabel("Frequency (Hz)")
-plt.ylabel("Amplitude (db)")
+plt.ylabel("Amplitude (m/s^2)")
 plt.title("Amplitude Spectrum")
 plt.show()
