@@ -5,10 +5,7 @@ from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 import os
 
-
-
-
-
+# Function for reading the data from csv files
 def read_data(path):
     # Read the data from the CSV file
     data = pd.read_csv(path)
@@ -21,7 +18,8 @@ def read_data(path):
     return [accel_x, accel_y, accel_z]
 
 
-
+# Function for getting the dominant frequencies from frequency domain
+# Performs windowing, 
 def getFrequencyPeaks(x,y,z):
     # Calculate the magnitude of the acceleration using Euclidean norm
     magnitude = np.sqrt(x**2 + y**2 + z**2)
@@ -65,10 +63,11 @@ def getFrequencyPeaks(x,y,z):
 
 
 directory = "actual_test"
-sensor_dirs = os.listdir(directory)
-num = len(os.listdir(os.path.join(directory,sensor_dirs[0]))) # returns number of samples in each sensor folder
+num = len(os.listdir(os.path.join(directory,os.listdir(directory)[0]))) # returns number of test samples in each sensor folder
 i = 0
 ML_data = []
+
+# Loop through each csv containing test samples and convert them all into ML training data
 while i < num:
     data_row = []
     for filename in os.listdir(directory):
@@ -81,7 +80,7 @@ while i < num:
     ML_data.append(data_row)
 
 print(ML_data[0])
-pd.DataFrame(ML_data).to_csv(directory+'test.csv')
+pd.DataFrame(ML_data).to_csv('ML_trainingTest.csv')
    
 
 # print((sorted_dominant_frequencies_amplitudes))
