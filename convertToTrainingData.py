@@ -55,10 +55,10 @@ def getFrequencyPeaks(x,y,z):
     #print("Dominant frequencies and amplitudes:")
     
     out = []
-    for i in range(0, len(sorted_dominant_frequencies_amplitudes)):
-        if sorted_dominant_frequencies_amplitudes[i][1] >= threshold:
-            out.append(sorted_dominant_frequencies_amplitudes[i])
-
+    for i in sorted_dominant_frequencies_amplitudes:
+        if i[1] >= threshold:
+            out.append(i)
+        
     return out
 
 
@@ -79,7 +79,8 @@ while i < num:
     i += 1
     ML_data.append(data_row)
 
-print(ML_data[0])
+# print(ML_data)
+# print(len(ML_data))
 pd.DataFrame(ML_data).to_csv('ML_trainingTest.csv')
    
 

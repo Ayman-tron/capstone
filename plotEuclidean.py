@@ -47,12 +47,14 @@ sorted_dominant_frequencies_amplitudes = sorted(
 # Calculate the threshold for 10% of the largest peak's magnitude
 threshold = 0.15 * sorted_dominant_frequencies_amplitudes[0][1]
 # Print the dominant frequencies and corresponding amplitudes above the threshold
-#print("Dominant frequencies and amplitudes:")
+print("Dominant frequencies and amplitudes:")
 
 out = []
-for i in range(0, len(sorted_dominant_frequencies_amplitudes)):
-    if sorted_dominant_frequencies_amplitudes[i][1] >= threshold:
-        out.append(sorted_dominant_frequencies_amplitudes[i])
+for i in sorted_dominant_frequencies_amplitudes:
+    if i[1] >= threshold:
+        #out.append(i)
+        print("Frequency: " + str(i[0]) + ", Amplitude: " + str(i[1]))
+#print(out)
 
 
 # Plot the amplitude spectrum
