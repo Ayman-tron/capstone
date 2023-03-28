@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 
 
 # Read the data from the CSV file
-data = pd.read_csv("digital_twin\\data\\2000_pipeline_test.csv")
+data = pd.read_csv(
+    "digital_twin\\actual_test\\CC_F232_2023_03_26_16_34_56.csv")
 
 # Extract the acceleration data from the CSV file
 accel_x = data.iloc[:, 1].values
