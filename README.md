@@ -8,7 +8,7 @@ The project consists of two Python scripts that process vibration data collected
 
 ### Scripts
 
-1. **read2.py** - This script reads the vibration data in the x, y, and z directions, calculates the magnitude of the acceleration using the Euclidean norm, applies a Hanning window, and performs FFT to calculate the amplitude spectrum. It then finds and prints the dominant frequencies and their corresponding amplitudes and plots the amplitude spectrum.
+1. **plotEuclidean.py** - This script reads the vibration data in the x, y, and z directions, calculates the magnitude of the acceleration using the Euclidean norm, applies a Hanning window, and performs FFT to calculate the amplitude spectrum. It then finds and prints the dominant frequencies and their corresponding amplitudes and plots the amplitude spectrum.
 
 2. **read.py** - This script reads the vibration data in the x, y, and z directions, applies a Hanning window, and performs FFT for each axis separately. It then plots the frequency spectrum of the acceleration data for each axis.
 
