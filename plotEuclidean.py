@@ -4,7 +4,7 @@ from scipy.fft import fft
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 
-path = "actual_test//sensor_a//ACC_F232_2023_03_26_16_34_56.csv"
+path = "digital_twin//actual_test//sensor_c//ACC_F232_2023_03_28_15_00_20.csv"
 
 # Read the data from the CSV file
 data = pd.read_csv(path)
@@ -15,7 +15,7 @@ accel_y = data.iloc[:, 2].values
 accel_z = data.iloc[:, 3].values
 
 # Function for getting the dominant frequencies from frequency domain
-# Performs windowing, 
+# Performs windowing,
 # Calculate the magnitude of the acceleration using Euclidean norm
 magnitude = np.sqrt(accel_x**2 + accel_y**2 + accel_z**2)
 
@@ -29,7 +29,7 @@ fft_data = fft(windowed_data)
 # Calculate the amplitude spectrum
 amplitude_spectrum = 2 * np.abs(fft_data) / len(windowed_data)
 
-    # Calculate the frequency bins
+# Calculate the frequency bins
 sampling_rate = 232  # Replace with your actual sampling rate
 frequency_bins = np.fft.fftfreq(len(windowed_data), d=1/sampling_rate)
 
@@ -52,9 +52,9 @@ print("Dominant frequencies and amplitudes:")
 out = []
 for i in sorted_dominant_frequencies_amplitudes:
     if i[1] >= threshold:
-        #out.append(i)
+        # out.append(i)
         print("Frequency: " + str(i[0]) + ", Amplitude: " + str(i[1]))
-#print(out)
+# print(out)
 
 
 # Plot the amplitude spectrum
