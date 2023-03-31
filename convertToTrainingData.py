@@ -73,30 +73,32 @@ while j < num:
         f = os.path.join(directory, filename)
         f = os.path.join(f,os.listdir(f)[j])
         data_raw = read_data(f)
-        data_fft = (getFrequencyPeaks(data_raw[0],data_raw[1],data_raw[2]))
+        data_peaks = (getFrequencyPeaks(data_raw[0],data_raw[1],data_raw[2]))
         # print(len(data_fft))
-        maxDomFreqCnt = max(maxDomFreqCnt, len(data_fft))
+        maxDomFreqCnt = max(maxDomFreqCnt, len(data_peaks))
     j += 1
-print(maxDomFreqCnt)
+# print(maxDomFreqCnt)
 
 # Loop through each csv containing test samples and convert them all into ML training data
 # i = 0
 ML_data = []
 binaryID = 0
-for i in range(0, num):
+for i in range(0, num): # for each sample...
     data_row = np.zeros((maxDomFreqCnt * 2 * 4) + 1)
     # print(len(os.listdir(directory)))
-    for fnum in range(0,len(os.listdir(directory))):
+    for fnum in range(0,len(os.listdir(directory))): # for each sensor A, C, G, I
         filename = os.listdir(directory)[fnum]
         f = os.path.join(directory, filename)
         f = os.path.join(f,os.listdir(f)[i])
         data_raw = read_data(f)
-        data_fft = (getFrequencyPeaks(data_raw[0],data_raw[1],data_raw[2]))
-        for n in range(0, len(data_fft)):
-            data_row[n * 2 + fnum * maxDomFreqCnt * 2] = data_fft[n][0]
-            data_row[n * 2 + fnum * maxDomFreqCnt * 2 + 1] = data_fft[n][1]
+        data_peaks = (getFrequencyPeaks(data_raw[0],data_raw[1],data_raw[2]))
+        for n in range(0, len(data_peaks)):
+            data_row[n * 2 + fnum * maxDomFreqCnt * 2] = data_peaks[n][0]
+            data_row[n * 2 + fnum * maxDomFreqCnt * 2 + 1] = data_peaks[n][1]
         # print(data_row)
-    if i % 3 == 0 and not i == 0:
+    
+    # put the 11 bit binary ID in the last column
+    if i % 3 == 0 and not i == 0: 
         if binaryID == 0:
             binaryID = 1
         else:
@@ -106,7 +108,9 @@ for i in range(0, num):
 # ML_data = np.array(ML_data)
 # print(ML_data)
 # print(len(ML_data))
-pd.DataFrame(ML_data).to_csv('ML_trainingTest.csv')
+
+###### Uncomment this to update the training test csv with more data
+# pd.DataFrame(ML_data).to_csv('ML_trainingTest.csv')
    
 
 # print((sorted_dominant_frequencies_amplitudes))

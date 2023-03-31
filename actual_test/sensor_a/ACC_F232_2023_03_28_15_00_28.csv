@@ -1,4 +1,4 @@
-Time,AccelerationX [m/s2],AccelerationY [m/s2],AccelerationZ [m/s2],Celsius [deg]
+teTime,AccelerationX [m/s2],AccelerationY [m/s2],AccelerationZ [m/s2],Celsius [deg]
 15:00:28,-4.68,-5.23,-4.15,27.9
 15:00:28,16.77,3.07,-13.78,27.9
 15:00:28,7.93,-0.83,-6.38,27.9
