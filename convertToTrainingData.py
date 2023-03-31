@@ -50,7 +50,7 @@ def getFrequencyPeaks(x,y,z):
         dominant_frequencies_amplitudes, key=lambda x: x[1], reverse=True)
     
     # Calculate the threshold for 10% of the largest peak's magnitude
-    threshold = 0.15 * sorted_dominant_frequencies_amplitudes[0][1]
+    threshold = 0.1 * sorted_dominant_frequencies_amplitudes[0][1]
     # Print the dominant frequencies and corresponding amplitudes above the threshold
     #print("Dominant frequencies and amplitudes:")
     
@@ -58,27 +58,52 @@ def getFrequencyPeaks(x,y,z):
     for i in sorted_dominant_frequencies_amplitudes:
         if i[1] >= threshold:
             out.append(i)
-        
+
     return out
 
 
 directory = "actual_test"
 num = len(os.listdir(os.path.join(directory,os.listdir(directory)[0]))) # returns number of test samples in each sensor folder
-i = 0
-ML_data = []
+
+# Checks the largest amount of significant frequencies from all data sets
+j = 0
+maxDomFreqCnt = 0
+while j < num:
+    for filename in os.listdir(directory):
+        f = os.path.join(directory, filename)
+        f = os.path.join(f,os.listdir(f)[j])
+        data_raw = read_data(f)
+        data_fft = (getFrequencyPeaks(data_raw[0],data_raw[1],data_raw[2]))
+        # print(len(data_fft))
+        maxDomFreqCnt = max(maxDomFreqCnt, len(data_fft))
+    j += 1
+print(maxDomFreqCnt)
 
 # Loop through each csv containing test samples and convert them all into ML training data
-while i < num:
-    data_row = []
-    for filename in os.listdir(directory):
+# i = 0
+ML_data = []
+binaryID = 0
+for i in range(0, num):
+    data_row = np.zeros((maxDomFreqCnt * 2 * 4) + 1)
+    # print(len(os.listdir(directory)))
+    for fnum in range(0,len(os.listdir(directory))):
+        filename = os.listdir(directory)[fnum]
         f = os.path.join(directory, filename)
         f = os.path.join(f,os.listdir(f)[i])
         data_raw = read_data(f)
-        data_fft = getFrequencyPeaks(data_raw[0],data_raw[1],data_raw[2])
-        data_row.append(data_fft)
-    i += 1
+        data_fft = (getFrequencyPeaks(data_raw[0],data_raw[1],data_raw[2]))
+        for n in range(0, len(data_fft)):
+            data_row[n * 2 + fnum * maxDomFreqCnt * 2] = data_fft[n][0]
+            data_row[n * 2 + fnum * maxDomFreqCnt * 2 + 1] = data_fft[n][1]
+        # print(data_row)
+    if i % 3 == 0 and not i == 0:
+        if binaryID == 0:
+            binaryID = 1
+        else:
+            binaryID = binaryID * 10
+    data_row[-1] = binaryID
     ML_data.append(data_row)
-
+# ML_data = np.array(ML_data)
 # print(ML_data)
 # print(len(ML_data))
 pd.DataFrame(ML_data).to_csv('ML_trainingTest.csv')

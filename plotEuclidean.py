@@ -4,7 +4,7 @@ from scipy.fft import fft
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 
-path = "digital_twin//actual_test//sensor_c//ACC_F232_2023_03_28_15_00_20.csv"
+path = "actual_test//sensor_a//ACC_F232_2023_03_28_15_00_28.csv"
 
 # Read the data from the CSV file
 data = pd.read_csv(path)
@@ -45,7 +45,7 @@ sorted_dominant_frequencies_amplitudes = sorted(
     dominant_frequencies_amplitudes, key=lambda x: x[1], reverse=True)
 
 # Calculate the threshold for 10% of the largest peak's magnitude
-threshold = 0.15 * sorted_dominant_frequencies_amplitudes[0][1]
+threshold = 0.1 * sorted_dominant_frequencies_amplitudes[0][1]
 # Print the dominant frequencies and corresponding amplitudes above the threshold
 print("Dominant frequencies and amplitudes:")
 
