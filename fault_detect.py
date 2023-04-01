@@ -45,12 +45,14 @@ class fault_detect():
 
         # Test single sample from training data
         while 1:
-            test_id = int(len(self.evidence) - 1)
+            test_id = int(4)
             x_test = self.load_test_data()
             prediction = self.predict_fault(x_test)
             print(self.labels[test_id])
             print(prediction)
-            self.push_firebase(prediction)
+            self.push_firebase(prediction[0])
+            
+            # update every 2 seconds. Can change 
             sleep(2)
 
 
@@ -105,7 +107,7 @@ class fault_detect():
 
     def load_test_data(self):
         freqCnt = convert.calcDomFreqCnt()
-        raw = convert.makeDataRow(convert.num - 1, freqCnt)
+        raw = convert.makeDataRow(7, freqCnt)
         evidence = [float(x) for x in raw[:-2]]
         return [evidence]
 
@@ -118,7 +120,7 @@ class fault_detect():
             prediction = self.model.predict(inputs)
         
         # Convert predictions into 10-bit binary
-        prediction = [bin(x).replace("0b", "").zfill(10) for x in prediction]
+        prediction = [bin(x).replace("0b", "").zfill(11) for x in prediction]
         
         return prediction
 
