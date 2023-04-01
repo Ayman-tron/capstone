@@ -9,6 +9,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import convertToTrainingData as convert
+from time import sleep
 
 
 TEST_SIZE = 0.2
@@ -43,23 +44,27 @@ class fault_detect():
     def main(self):
 
         # Test single sample from training data
-        test_id = int(len(self.evidence) - 1)
-        x_test = self.load_test_data()
-        prediction = self.predict_fault(x_test)
-        print(self.labels[test_id])
-        print(prediction)
+        while 1:
+            test_id = int(len(self.evidence) - 1)
+            x_test = self.load_test_data()
+            prediction = self.predict_fault(x_test)
+            print(self.labels[test_id])
+            print(prediction)
+            self.push_firebase(prediction)
+            sleep(2)
+
 
         # Test using split test data
         # y_test = bin(model.predict(X_test)).replace("0b", "")
-        prediction = self.predict_fault(self.X_test)
-        print(self.y_test)
-        print(prediction)
+        # prediction = self.predict_fault(self.X_test)
+        # print(self.y_test)
+        # print(prediction)
 
         # y_test = y_test.rjust(11,'0')
         # print(y_test)
 
         # Push output to firebase
-        self.push_firebase(prediction)
+        
 
         ### uncomment to enable evaluate function
         # sensitivity, specificity = evaluate(y_test, predictions)
