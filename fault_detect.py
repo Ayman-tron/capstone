@@ -8,110 +8,147 @@ from numpy import random
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-
-# TEST_SIZE = 0.9
-
-
-def main():
-    cred = credentials.Certificate(
-       "live-b1071-firebase-adminsdk-m1rco-f2f91025a2.json")
-    firebase_admin.initialize_app(cred)
-
-    db = firestore.client()
-
-    # Check command-line arguments
-    if len(sys.argv) != 2:
-        sys.exit("Usage: python fault_detect.py data")
-
-    # Load data from spreadsheet and split into train and test sets
-    evidence, labels = load_data(sys.argv[1])
-    # X_train, X_test, y_train, y_test = train_test_split(
-    #     evidence, labels, test_size=TEST_SIZE
-    # )
-
-    # Train model and make predictions
-    model = train_model(evidence, labels)
-
-    test_id = int(random.rand() * len(evidence))
-    x_test = np.array(evidence[test_id]).reshape(1, -1)
-    print(labels[test_id])
-    print(model.predict(x_test)[0])
-    y_test = bin(model.predict(x_test)[0]).replace("0b", "")
-    print(y_test)
-    y_test = y_test.rjust(11,'0')
-    print(y_test)
-
-    status = str(y_test)
-    timestamp = datetime.now()
-    doc_ref = db.collection(u'Flange_status').document()
-    doc_ref.set({
-        u'status': status,u'timestamp': timestamp
-    })
-
-    ### uncomment to enable evaluate function
-    # sensitivity, specificity = evaluate(y_test, predictions)
-
-    # Print results
-    # print(f"Correct: {(y_test == predictions).sum()}")
-    # print(f"Incorrect: {(y_test != predictions).sum()}")
-    # print(f"True Positive Rate: {100 * sensitivity:.2f}%")
-    # print(f"True Negative Rate: {100 * specificity:.2f}%")
+import convertToTrainingData as convert
 
 
-def load_data(filename):
-    with open(filename) as f:
-        # open the file to read
-        reader = csv.reader(f)
-        next(reader)
+TEST_SIZE = 0.2
+
+class fault_detect():
+    def __init__(self):
+        self.path_trainData = 'ML_trainingTest.csv'
+        # Check command-line arguments
+        try:
+            # Load data from terminal input 2nd argument spreadsheet and split into input and output data
+            self.evidence, self.labels = self.load_training_data(sys.argv[1])
+        except:
+            # Load data from path spreadsheet and split into input and output data
+            self.evidence, self.labels = self.load_training_data(self.path_trainData)
         
-        data = []
-        for row in reader:
-            Peaks = [float(x) for x in row[1:-2]]
-            Healthy = int(row[-1],2)
-            data.append({
-                "evidence": Peaks,
-                "label":  Healthy
-            })
+        # obtain test data from training data
+        _, self.X_test, _, self.y_test = train_test_split(
+            self.evidence, self.labels, test_size=TEST_SIZE
+        )
 
-    evidence = [row["evidence"] for row in data]
-    labels = [row["label"] for row in data]
+        # Train model
+        self.model = self.train_model(self.evidence, self.labels)
 
-    return evidence, labels
+        # Setup Firebase interface
+        cred = credentials.Certificate(
+        "live-b1071-firebase-adminsdk-m1rco-f2f91025a2.json")
+        firebase_admin.initialize_app(cred)
 
-
-def train_model(evidence, labels):
-    model = KNeighborsClassifier(n_neighbors=2)
-    model.fit(evidence, labels)
-    return model
+        self.db = firestore.client()
 
 
-def evaluate(labels, predictions):
-    # Compute how well we performed
-    # return (labels, predictions)
-    positive_labels = labels.count(1)
-    negative_labels = labels.count(0)
-    # print(positive_labels, negative_labels)
-    total = len(predictions)
-    correct_pos = 0
-    correct_neg = 0
-    incorrect = 0
-    for i in range(total):
-        # print(predictions[i], labels[i])
-        if predictions[i] == labels[i]:
-            if labels[i] == 1:
-                correct_pos += 1
+    def main(self):
+
+        # Test single sample from training data
+        test_id = int(len(self.evidence) - 1)
+        x_test = self.load_test_data()
+        prediction = self.predict_fault(x_test)
+        print(self.labels[test_id])
+        print(prediction)
+
+        # Test using split test data
+        # y_test = bin(model.predict(X_test)).replace("0b", "")
+        prediction = self.predict_fault(self.X_test)
+        print(self.y_test)
+        print(prediction)
+
+        # y_test = y_test.rjust(11,'0')
+        # print(y_test)
+
+        # Push output to firebase
+        self.push_firebase(prediction)
+
+        ### uncomment to enable evaluate function
+        # sensitivity, specificity = evaluate(y_test, predictions)
+
+        # Print results
+        # print(f"Correct: {(y_test == predictions).sum()}")
+        # print(f"Incorrect: {(y_test != predictions).sum()}")
+        # print(f"True Positive Rate: {100 * sensitivity:.2f}%")
+        # print(f"True Negative Rate: {100 * specificity:.2f}%")
+
+    def push_firebase(self, status):
+        status = str(status)
+        timestamp = datetime.now()
+        doc_ref = self.db.collection(u'Flange_status').document()
+        doc_ref.set({
+            u'status': status,u'timestamp': timestamp
+        })
+
+    def load_training_data(self, filename):
+        with open(filename) as f:
+            # open the file to read
+            reader = csv.reader(f)
+            next(reader)
+
+            data = []
+            for row in reader:
+                Peaks = [float(x) for x in row[1:-2]]
+                Healthy = int(row[-1],2)
+                data.append({
+                    "evidence": Peaks,
+                    "label":  Healthy
+                })
+        evidence = [row["evidence"] for row in data]
+
+        labels = [row["label"] for row in data]
+
+        return evidence, labels
+
+    def load_test_data(self):
+        freqCnt = convert.calcDomFreqCnt()
+        raw = convert.makeDataRow(convert.num - 1, freqCnt)
+        evidence = [float(x) for x in raw[:-2]]
+        return [evidence]
+
+    def predict_fault(self, inputs):
+        try:
+            prediction = self.model.predict(inputs)
+        except ValueError:
+            # Do this if input is a single sample
+            inputs = inputs.reshape(1, -1)
+            prediction = self.model.predict(inputs)
+        
+        # Convert predictions into 10-bit binary
+        prediction = [bin(x).replace("0b", "").zfill(10) for x in prediction]
+        
+        return prediction
+
+    def train_model(self, evidence, labels):
+        model = KNeighborsClassifier(n_neighbors=1)
+        model.fit(evidence, labels)
+        return model
+
+    def evaluate(self, labels, predictions):
+        # Compute how well we performed
+        # return (labels, predictions)
+        positive_labels = labels.count(1)
+        negative_labels = labels.count(0)
+        # print(positive_labels, negative_labels)
+        total = len(predictions)
+        correct_pos = 0
+        correct_neg = 0
+        incorrect = 0
+        for i in range(total):
+            # print(predictions[i], labels[i])
+            if predictions[i] == labels[i]:
+                if labels[i] == 1:
+                    correct_pos += 1
+                else:
+                    correct_neg += 1
+
             else:
-                correct_neg += 1
+                incorrect += 1
 
-        else:
-            incorrect += 1
+        sensitivity = float((correct_pos / positive_labels))
+        specificity = float((correct_neg / negative_labels))
+        #print("!!!!!!!", sensitivity)
 
-    sensitivity = float((correct_pos / positive_labels))
-    specificity = float((correct_neg / negative_labels))
-    #print("!!!!!!!", sensitivity)
-
-    return (sensitivity, specificity)
+        return (sensitivity, specificity)
 
 
 if __name__ == "__main__":
-    main()
+    fault_detect().main()
