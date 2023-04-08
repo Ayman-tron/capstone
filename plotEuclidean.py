@@ -4,7 +4,7 @@ from scipy.fft import fft
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 
-path = "actual_test//sensor_a//ACC_F232_2023_03_28_15_00_28.csv"
+path = "actual_test//sensor_a//ACC_F232_2023_03_28_14_56_56.csv"
 
 # Read the data from the CSV file
 data = pd.read_csv(path)
@@ -53,16 +53,17 @@ out = []
 for i in sorted_dominant_frequencies_amplitudes:
     if i[1] >= threshold:
         # out.append(i)
-        print("Frequency: " + str(i[0]) + ", Amplitude: " + str(i[1]))
+        print("Frequency: " + str(round(i[0],2)) + " Hz, Amplitude: " + str(round(i[1],2)))
 # print(out)
 
 
 # Plot the amplitude spectrum
-
+plt.style.use('dark_background')
 plt.plot(frequency_bins[2:len(frequency_bins)//2],
          amplitude_spectrum[2:len(amplitude_spectrum)//2])
 plt.xlabel("Frequency (Hz)")
 plt.ylabel("Amplitude (m/s^2)")
-plt.title("Amplitude Spectrum")
-plt.ioff()
-plt.show(block=True)
+plt.title("Frequency Spectrum of Vibration, Faulty Flange A")
+
+plt.savefig('figure2.png', transparent=True)
+plt.show()

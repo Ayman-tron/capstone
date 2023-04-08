@@ -107,7 +107,7 @@ class fault_detect():
 
     def load_test_data(self):
         freqCnt = convert.calcDomFreqCnt()
-        raw = convert.makeDataRow(7, freqCnt)
+        raw = convert.makeDataRow(convert.num - 1, freqCnt)
         evidence = [float(x) for x in raw[:-2]]
         return [evidence]
 
