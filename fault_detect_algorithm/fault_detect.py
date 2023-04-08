@@ -37,7 +37,7 @@ class fault_detect():
 
         # Setup Firebase interface
         cred = credentials.Certificate(
-            "fault_detect_algorithm\\live-b1071-firebase-adminsdk-m1rco-f2f91025a2.json")
+            "C:\\Projects\\digital twin\\capstone\\fault_detect_algorithm\\live-b1071-firebase-adminsdk-m1rco-f2f91025a2.json")
         firebase_admin.initialize_app(cred)
 
         self.db = firestore.client()

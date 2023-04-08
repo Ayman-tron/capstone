@@ -44,7 +44,7 @@ def calcDomFreqCnt():
     while j < num:
         for filename in os.listdir(directory):
             f = os.path.join(directory, filename)
-            f = os.path.join(f,os.listdir(f)[j])
+            f = os.path.join(f, os.listdir(f)[j])
             print(f)
             data_raw = read_data(f)
             data_peaks = (getFrequencyPeaks(
