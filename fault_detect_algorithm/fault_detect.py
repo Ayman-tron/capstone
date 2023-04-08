@@ -17,7 +17,7 @@ TEST_SIZE = 0.2
 
 class fault_detect():
     def __init__(self):
-        self.path_trainData = 'ML_trainingTest.csv'
+        self.path_trainData = 'fault_detect_algorithm\\ML_trainingTest.csv'
         # Check command-line arguments
         try:
             # Load data from terminal input 2nd argument spreadsheet and split into input and output data
@@ -37,7 +37,7 @@ class fault_detect():
 
         # Setup Firebase interface
         cred = credentials.Certificate(
-            "live-b1071-firebase-adminsdk-m1rco-f2f91025a2.json")
+            "fault_detect_algorithm\\live-b1071-firebase-adminsdk-m1rco-f2f91025a2.json")
         firebase_admin.initialize_app(cred)
 
         self.db = firestore.client()

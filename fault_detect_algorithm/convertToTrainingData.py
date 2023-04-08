@@ -42,6 +42,7 @@ def calcDomFreqCnt():
         for filename in os.listdir(directory):
             f = os.path.join(directory, filename)
             f = os.path.join(f,os.listdir(f)[j])
+            print(f)
             data_raw = read_data(f)
             data_peaks = (getFrequencyPeaks(data_raw[0],data_raw[1],data_raw[2]))
             # print(len(data_fft))
@@ -81,6 +82,7 @@ def read_data(path):
 # Function for getting the dominant frequencies from frequency domain with windowing
 def getFrequencyPeaks(x,y,z):
     # Calculate the magnitude of the acceleration using Euclidean norm
+    print(type(x[0]))
     magnitude = np.sqrt(x**2 + y**2 + z**2)
 
     # Apply a window function (Hanning window)
