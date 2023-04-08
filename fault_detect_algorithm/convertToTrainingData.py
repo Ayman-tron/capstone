@@ -5,7 +5,7 @@ from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 import os
 
-directory = "capstone\\actual_test"
+directory = "..\\actual_test"
 # returns number of test samples in each sensor folder
 num = len(os.listdir(os.path.join(directory, os.listdir(directory)[0])))
 
