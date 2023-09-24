@@ -1,4 +1,4 @@
-# IoT-Based Predictive Maintenance Capstone Project
+# IoT Enabled Vibration Monitoring Toward Smart Maintenance
 
 This repository contains the code for an IoT-based predictive maintenance application using vibration data analysis. The project aims to develop a system that identifies faults in pipe systems by analyzing acceleration data from IoT devices using a k-nearest neighbor classification machine learning algorithm.
 
